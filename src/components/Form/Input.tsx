@@ -1,16 +1,23 @@
-import { FormControl, FormLabel, Input as ChakraInput, InputProps as ChakraInputProps} from "@chakra-ui/react";
+import { FormControl, FormErrorMessage, FormLabel, Input as ChakraInput, InputProps as ChakraInputProps} from "@chakra-ui/react";
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup'
+import { FieldError, UseFormRegister } from "react-hook-form";
+
 
 interface InputProps extends ChakraInputProps{
   name: string,
   label?: string,
+  register: any,
+  error?: FieldError
 }
 
-export function Input({name, label, ...rest}: InputProps){
- return (
-  <FormControl>
+
+export const Input = ({name, label, error = null, register, ...rest}: InputProps) =>{
+  return (
+  <FormControl isInvalid={!!error}>
     <FormLabel htmlFor={name}>{label}</FormLabel>
     <ChakraInput 
-      id={name} 
+      id={name}
       name={name}
       focusBorderColor="pink.500"
       bg="gray.900"
@@ -19,8 +26,16 @@ export function Input({name, label, ...rest}: InputProps){
         bg: "gray.900"
       }}
       size="lg"
+      {...register(name)}
       {...rest}
     />
+    
+    {!!error && (
+      <FormErrorMessage>
+        {error.message}
+      </FormErrorMessage>
+    )}
   </FormControl>
   ) 
 }
+
